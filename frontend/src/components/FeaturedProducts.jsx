@@ -8,6 +8,9 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
 	const { addToCart } = useCartStore();
 
+	// Ensure featuredProducts is an array
+	const safeProducts = Array.isArray(featuredProducts) ? featuredProducts : [];
+
 	useEffect(() => {
 		const handleResize = () => {
 			if (window.innerWidth < 640) setItemsPerPage(1);
@@ -30,7 +33,22 @@ const FeaturedProducts = ({ featuredProducts }) => {
 	};
 
 	const isStartDisabled = currentIndex === 0;
-	const isEndDisabled = currentIndex >= featuredProducts.length - itemsPerPage;
+	const isEndDisabled = currentIndex >= safeProducts.length - itemsPerPage;
+
+	// Don't render if no products
+	if (safeProducts.length === 0) {
+		return (
+			<div className='py-12'>
+				<div className='container mx-auto px-4'>
+					<h2 className='text-center text-5xl sm:text-6xl font-bold text-emerald-400 mb-4'>Featured</h2>
+					<div className='text-center text-gray-300'>
+						<p>No featured products available at the moment.</p>
+						<p className='text-sm mt-2'>Please check back later or contact support if this persists.</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='py-12'>
@@ -42,7 +60,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 							className='flex transition-transform duration-300 ease-in-out'
 							style={{ transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)` }}
 						>
-							{featuredProducts?.map((product) => (
+							{safeProducts?.map((product) => (
 								<div key={product._id} className='w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-2'>
 									<div className='bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-emerald-500/30'>
 										<div className='overflow-hidden'>

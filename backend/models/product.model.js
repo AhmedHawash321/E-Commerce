@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema(
 			default: false,
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true } // every time a new User document is created or updated, the createdAt and updatedAt fields will be automatically managed by Mongoose.
 );
 
 const Product = mongoose.model("Product", productSchema);

@@ -17,4 +17,4 @@ router.get('/profile', protectRoute, getProfile)
 
 
 
-export default router
+export default router;
