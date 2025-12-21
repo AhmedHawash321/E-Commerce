@@ -1,4 +1,4 @@
-import { redis } from "../lib/redis.js";
+import { safeRedis as redis } from "../lib/redis.js";
 import cloudinary from "../lib/cloudinary.js";
 import Product from "../models/product.model.js";
 

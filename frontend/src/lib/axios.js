@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// Hardcode the URL for now to fix the issue
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || (import.meta.mode === 'development' ? 'http://localhost:5000/api' : '/api'),
+    baseURL: 'http://localhost:5000/api',
     withCredentials: true,
 });
 

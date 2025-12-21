@@ -89,17 +89,45 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
 	try {
 		const refreshToken = req.cookies.refreshToken;
-		if (refreshToken) {
-			const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-			await redis.del(`refresh_token:${decoded.userId}`);
-		}
-
+		
+		// Clear cookies first (always do this even if token is invalid)
 		res.clearCookie("accessToken");
 		res.clearCookie("refreshToken");
+		
+		if (!refreshToken) {
+			return res.json({ message: "Logged out successfully" });
+		}
+		
+		try {
+			// Verify the token
+			const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+			
+			// Try to delete from Redis, but don't fail if Redis is unavailable
+			try {
+				await redis.del(`refresh_token:${decoded.userId}`);
+			} catch (redisError) {
+				console.log("Redis deletion failed (non-critical):", redisError.message);
+				// Continue with logout even if Redis fails
+			}
+			
+		} catch (jwtError) {
+			// Handle specific JWT errors gracefully
+			if (jwtError.name === 'TokenExpiredError') {
+				console.log("Refresh token expired during logout - normal cleanup");
+			} else if (jwtError.name === 'JsonWebTokenError') {
+				console.log("Invalid refresh token during logout:", jwtError.message);
+			}
+			// Don't throw error - user should still be logged out
+		}
+		
 		res.json({ message: "Logged out successfully" });
+		
 	} catch (error) {
-		console.log("Error in logout controller", error.message);
-		res.status(500).json({ message: "Server error", error: error.message });
+		console.log("Unexpected error in logout controller", error.message);
+		// Still try to clear cookies even on unexpected errors
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
+		res.status(500).json({ message: "Server error during logout" });
 	}
 };
 
