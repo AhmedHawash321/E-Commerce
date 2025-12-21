@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Hardcode the URL for now to fix the issue
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://e-commerce-glav.vercel.app/',
     withCredentials: true,
 });
 
