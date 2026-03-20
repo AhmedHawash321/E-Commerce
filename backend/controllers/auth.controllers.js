@@ -45,7 +45,12 @@ export const signup = async (req, res) => {
 
 		// authenticate
 		const { accessToken, refreshToken } = generateTokens(user._id);
-		await storeRefreshToken(user._id, refreshToken);
+		
+		try {
+			await storeRefreshToken(user._id, refreshToken);
+		} catch (redisError) {
+			console.log("Redis unavailable, continuing without token storage:", redisError.message);
+		}
 
 		setCookies(res, accessToken, refreshToken);
 
