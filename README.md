@@ -2,7 +2,6 @@
 
 A robust, scalable E-Commerce solution built with the **PERN Stack** (PostgreSQL, Express, React, Node.js) but enhanced with **MongoDB Atlas**, **Redis** for high-performance caching, and **Stripe** for secure payments.
 
-![Main Dashboard](./frontend/public/screenshots/dashboard.png) *(تأكد من وضع مسار الصورة الصحيح هنا)*
 
 ## 🚀 Key Features
 
